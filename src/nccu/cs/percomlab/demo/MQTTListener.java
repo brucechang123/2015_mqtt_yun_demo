@@ -25,14 +25,19 @@ public class MQTTListener implements MqttCallback
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception
     {
     	String tempString = mqttMessage.toString();
+    	
     	String[] arrayString = new String[2];
-    	arrayString = tempString.split(": ");
+    	arrayString = tempString.split(" = ");
+    	//arrayString = tempString.split(": ");
     	
     	if (arrayString[0].equals("Temperature")){
     		MQTTListener.temperature = Integer.parseInt(arrayString[1]);
+    		System.out.println(Integer.parseInt(arrayString[1]));
+    		
     	}
     	else if (arrayString[0].equals("Humidity")){
     		MQTTListener.humidity = Integer.parseInt(arrayString[1]);
+    		System.out.println(Integer.parseInt(arrayString[1]));
     	}
     	else{
     		// do nothing

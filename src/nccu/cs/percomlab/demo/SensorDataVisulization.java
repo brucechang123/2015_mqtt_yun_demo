@@ -9,13 +9,13 @@ public class SensorDataVisulization extends JApplet implements Runnable {
     private Image offScreen;
     private Graphics gOffScreen;
     private int pos1, pos2;
-    private Subscriber subscriber;
+   // private SensorSubscriber subscriber;
 
     public void init() {
         setSize(800, 600);
         offScreen = createImage(getWidth(), getHeight());
         gOffScreen = offScreen.getGraphics();
-        subscriber = new Subscriber();
+       // subscriber = new SensorSubscriber();
         pos1 = 10;
         pos2 = 10;
     }
