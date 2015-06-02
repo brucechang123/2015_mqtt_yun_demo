@@ -15,6 +15,7 @@ public class MQtoDB {
 	private static String dbName = "2015_mqtt_yun_demo";
 	private static String user = "root";
 	private static String password = "root";
+	private static MQTTListener mqttListener;
 
 	public static void subscribe() {
 		MemoryPersistence persistence = new MemoryPersistence();
@@ -24,7 +25,8 @@ public class MQtoDB {
 					persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
-			sampleClient.setCallback(new MQTTListener());
+			mqttListener = new MQTTListener();
+			sampleClient.setCallback(mqttListener);
 			IMqttToken conToken = sampleClient.connect(connOpts);
 			conToken.waitForCompletion();
 
@@ -52,14 +54,14 @@ public class MQtoDB {
 
 		while (true) {
 			timestamp = Utils.getDateString(new Date());
-			if (MQTTListener.humidityIsReceived == true && MQTTListener.temperatureIsReceived == true) {
+			if (mqttListener.humidityIsReceived == true && mqttListener.temperatureIsReceived == true) {
 				// Insert all values into database
 				try {
 					stmt.executeUpdate("INSERT INTO temperature VALUES('"
-							+ timestamp + "', '" + MQTTListener.temperature
+							+ timestamp + "', '" + mqttListener.temperature
 							+ "')");
 					stmt.executeUpdate("INSERT INTO humidity VALUES('"
-							+ timestamp + "', '" + MQTTListener.humidity + "')");
+							+ timestamp + "', '" + mqttListener.humidity + "')");
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

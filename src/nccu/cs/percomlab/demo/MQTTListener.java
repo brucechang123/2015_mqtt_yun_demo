@@ -6,10 +6,22 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTTListener implements MqttCallback
 {
-	public static int temperature;
-	public static int humidity;
-	public static boolean humidityIsReceived = false;
-	public static boolean temperatureIsReceived = false;
+	public int temperature;
+	public int humidity;
+	public boolean humidityIsReceived = false;
+	public boolean temperatureIsReceived = false;
+	public int getTemperature() {
+		return this.temperature;
+	}
+	public int getHumidity() {
+		return this.humidity;
+	}
+	public boolean getHumidityFlag(){
+		return this.humidityIsReceived;
+	}
+	public boolean getTemperatureFlag(){
+		return this.temperatureIsReceived;
+	}
     @Override
     public void connectionLost(Throwable arg0)
     {
@@ -32,13 +44,13 @@ public class MQTTListener implements MqttCallback
     	arrayString = tempString.split(": ");
     	
     	if (arrayString[0].equals("Temperature")){
-    		MQTTListener.temperature = Integer.parseInt(arrayString[1]);
+    		this.temperature = Integer.parseInt(arrayString[1]);
     		//System.out.println(Integer.parseInt(arrayString[1]));
     		temperatureIsReceived = true;
     		
     	}
     	else if (arrayString[0].equals("Humidity")){
-    		MQTTListener.humidity = Integer.parseInt(arrayString[1]);
+    		this.humidity = Integer.parseInt(arrayString[1]);
 			// System.out.println(Integer.parseInt(arrayString[1]));
 			humidityIsReceived = true;
     	}
