@@ -62,10 +62,10 @@ public class Publisher implements Runnable {
 		while (isRunning == true) {
 			if (this.h == true) {
 				int temp = random.nextInt(15) + 40;
-				content = "Humidity: " + String.valueOf(temp);
+				content = "Humidity:  " + String.valueOf(temp);
 			} else if (this.t == true) {
-				int temp = random.nextInt(10) + 20;
-				content = "Temperature: " + String.valueOf(temp);
+				int temp = random.nextInt(10) + 25;
+				content = "Temperature:  " + String.valueOf(temp);
 			} else {
 				// do nothing
 			}
