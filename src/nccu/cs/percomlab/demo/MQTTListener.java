@@ -8,7 +8,8 @@ public class MQTTListener implements MqttCallback
 {
 	public static int temperature;
 	public static int humidity;
-	public static boolean isReceived = false;
+	public static boolean humidityIsReceived = false;
+	public static boolean temperatureIsReceived = false;
     @Override
     public void connectionLost(Throwable arg0)
     {
@@ -25,7 +26,6 @@ public class MQTTListener implements MqttCallback
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception
     {
-    	isReceived = true;
     	String tempString = mqttMessage.toString();
     	
     	String[] arrayString = new String[2];
@@ -34,11 +34,13 @@ public class MQTTListener implements MqttCallback
     	if (arrayString[0].equals("Temperature")){
     		MQTTListener.temperature = Integer.parseInt(arrayString[1]);
     		//System.out.println(Integer.parseInt(arrayString[1]));
+    		temperatureIsReceived = true;
     		
     	}
     	else if (arrayString[0].equals("Humidity")){
     		MQTTListener.humidity = Integer.parseInt(arrayString[1]);
-    		//System.out.println(Integer.parseInt(arrayString[1]));
+			// System.out.println(Integer.parseInt(arrayString[1]));
+			humidityIsReceived = true;
     	}
     	else{
     		// do nothing

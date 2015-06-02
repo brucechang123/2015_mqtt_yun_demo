@@ -13,8 +13,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MQtoDB {
 	private static String dbName = "2015_mqtt_yun_demo";
-	private static String user = "guest";
-	private static String password = "nccutest";
+	private static String user = "root";
+	private static String password = "root";
 
 	public static void subscribe() {
 		MemoryPersistence persistence = new MemoryPersistence();
@@ -39,19 +39,6 @@ public class MQtoDB {
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		subscribe();
-		// for (int i = 0; i < 10; i++){
-		// System.out.println("temperature = ");
-		// System.out.println(MQTTListener.temperature);
-		// System.out.println("humidity = ");
-		// System.out.println(MQTTListener.humidity);
-		// try {
-		// Thread.sleep(2000);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		// Load JDBC driver
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 		// Get connection
 		String url = "jdbc:mysql://localhost:3306/" + dbName + "?user=" + user
@@ -61,12 +48,11 @@ public class MQtoDB {
 		Statement stmt = connection.createStatement();
 
 		// Declaration
-		int temperature;
 		String timestamp;
 
 		while (true) {
 			timestamp = Utils.getDateString(new Date());
-			if (MQTTListener.isReceived == true) {
+			if (MQTTListener.humidityIsReceived == true && MQTTListener.temperatureIsReceived == true) {
 				// Insert all values into database
 				try {
 					stmt.executeUpdate("INSERT INTO temperature VALUES('"
@@ -79,7 +65,7 @@ public class MQtoDB {
 					e.printStackTrace();
 				}
 
-				// Sleep 5 sec
+				// Sleep 2 sec
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {

@@ -1,14 +1,13 @@
 package nccu.cs.percomlab.demo;
 
 import java.math.RoundingMode;
-import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class Utils
 {
-    private final static DateFormat df = DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG, Locale.TAIWAN);
+    private final static SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     
     public static String getRoundedString(double input, int numberOfDigits)
     {
