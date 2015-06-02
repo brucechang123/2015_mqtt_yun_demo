@@ -13,18 +13,20 @@ import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-public class HygroThermometer extends JApplet implements Runnable {
-	private Image offScreen;
-    private Graphics gOffScreen;
-    private static MQTTListener mqttListener;
 
-    public void init() {
-    	subscribe();
-        setSize(600, 600);
-        offScreen = createImage(getWidth(), getHeight());
-        gOffScreen = offScreen.getGraphics();
-    }
-    public static void subscribe() {
+public class Demo extends JApplet implements Runnable {
+	private Image offScreen;
+	private Graphics gOffScreen;
+	private static MQTTListener mqttListener;
+
+	public void init() {
+		subscribeMqttServer();
+		setSize(600, 600);
+		offScreen = createImage(getWidth(), getHeight());
+		gOffScreen = offScreen.getGraphics();
+	}
+
+	public static void subscribeMqttServer() {
 		MemoryPersistence persistence = new MemoryPersistence();
 		try {
 			MqttAsyncClient sampleClient = new MqttAsyncClient(
@@ -45,64 +47,69 @@ public class HygroThermometer extends JApplet implements Runnable {
 			ex.printStackTrace();
 		}
 	}
-    public void start() {
-        (new Thread(this)).start();
-    }
 
-    public void run() {
-        // 動畫迴圈
-        while (true) {
-        	clearScreen();
-        	drawThermometer();
-        	drawHygrometer();
-        	String timestamp = Utils.getDateString(new Date());
-    		gOffScreen.setColor(Color.black);
-    		gOffScreen.setFont(new Font("default", Font.BOLD, 16));
-        	gOffScreen.drawString(timestamp, 170, 500);
-            repaint();  
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-	private void drawThermometer() {
+	public void start() {
+		(new Thread(this)).start();
+	}
+
+	public void run() {
+		// 動畫迴圈
+		while (true) {
+			showTwoMeters();
+			repaint();
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void showTwoMeters() {
+		clearScreen();
+		showThermometer();
+		showHygrometer();
+		showTime();
+	}
+
+	private void clearScreen() {
+		gOffScreen.clearRect(0, 0, 600, 600);
+	}
+
+	private void showThermometer() {
 		thermometerText();
 		temperatureValueIsReceived();
 		drawThermometerFrame();
 		drawThermometerScale();
 	}
+
 	private void thermometerText() {
 		gOffScreen.setColor(Color.black);
 		gOffScreen.setFont(new Font("default", Font.BOLD, 16));
 		gOffScreen.drawString("Thermometer", 120, 100);
 	}
-	private void drawHygrometer() {
-		hygrometerText();
-		humidityValueIsReceived();
-		drawHygromometerFrame();
-		drawHygrometerScale();
-	}
+
 	private void temperatureValueIsReceived() {
 		gOffScreen.setColor(Color.red);
 		gOffScreen.setFont(new Font("default", Font.CENTER_BASELINE, 24));
-		if (mqttListener.getTemperatureFlag() == true){
+		if (mqttListener.getTemperatureFlag() == true) {
 			int temp = mqttListener.getTemperature();
 			gOffScreen.drawString(String.valueOf(temp), 150, 425);
 			gOffScreen.drawString("C", 190, 425);
 			gOffScreen.setFont(new Font("default", Font.CENTER_BASELINE, 12));
 			gOffScreen.drawString("o", 183, 412);
 			drawTemperatureBar(temp);
-		}
-		else{
+		} else {
 			gOffScreen.drawString("NAN", 150, 425);
 		}
 	}
+
 	private void drawTemperatureBar(int temperature) {
 		gOffScreen.setColor(Color.red);
-		gOffScreen.fillRect(160, 300 - temperature*3, 30, temperature*3 + 70);
+		gOffScreen.fillRect(160, 350 - (temperature - 20) * 20, 30,
+				(temperature - 20) * 20 + 20);
 	}
+
 	private void drawThermometerFrame() {
 		gOffScreen.setColor(Color.gray);
 		gOffScreen.drawLine(160, 357, 160, 150);
@@ -111,47 +118,55 @@ public class HygroThermometer extends JApplet implements Runnable {
 		gOffScreen.setColor(Color.red);
 		gOffScreen.fillOval(150, 350, 50, 50);
 	}
+
 	private void drawThermometerScale() {
 		gOffScreen.setColor(Color.gray);
-    	gOffScreen.setFont(new Font("default", Font.CENTER_BASELINE, 16));
-		gOffScreen.drawString("0", 200, 310);
-		gOffScreen.drawLine(155, 300, 195, 300);
 		gOffScreen.setFont(new Font("default", Font.CENTER_BASELINE, 12));
-		gOffScreen.drawString("-10", 200, 335);
-		gOffScreen.drawLine(185, 330, 195, 330);
-		gOffScreen.drawString("10", 200, 275);
+		gOffScreen.drawLine(185, 350, 195, 350);
+		gOffScreen.drawString("20", 200, 355);
+		gOffScreen.drawLine(185, 310, 195, 310);
+		gOffScreen.drawString("22", 200, 315);
 		gOffScreen.drawLine(185, 270, 195, 270);
-		gOffScreen.drawString("20", 200, 245);
-		gOffScreen.drawLine(185, 240, 195, 240);
-		gOffScreen.drawString("30", 200, 215);
-		gOffScreen.drawLine(185, 210, 195, 210);
-		gOffScreen.drawString("40", 200, 185);
-		gOffScreen.drawLine(185, 180, 195, 180);
-		gOffScreen.drawString("50", 200, 155);
+		gOffScreen.drawString("24", 200, 275);
+		gOffScreen.drawLine(185, 230, 195, 230);
+		gOffScreen.drawString("26", 200, 235);
+		gOffScreen.drawLine(185, 190, 195, 190);
+		gOffScreen.drawString("28", 200, 195);
 		gOffScreen.drawLine(185, 150, 195, 150);
+		gOffScreen.drawString("30", 200, 155);
 	}
+
+	private void showHygrometer() {
+		hygrometerText();
+		humidityValueIsReceived();
+		drawHygromometerFrame();
+		drawHygrometerScale();
+	}
+
 	private void hygrometerText() {
 		gOffScreen.setColor(Color.black);
 		gOffScreen.setFont(new Font("default", Font.BOLD, 16));
-		gOffScreen.drawString("Hygromometer", 280, 100);
+		gOffScreen.drawString("Hygromometer", 270, 100);
 	}
+
 	private void humidityValueIsReceived() {
 		gOffScreen.setColor(Color.blue);
 		gOffScreen.setFont(new Font("default", Font.CENTER_BASELINE, 24));
-		if (mqttListener.getHumidityFlag() == true){
+		if (mqttListener.getHumidityFlag() == true) {
 			int temp = mqttListener.getHumidity();
 			gOffScreen.drawString(String.valueOf(temp), 300, 425);
 			gOffScreen.drawString("%", 340, 425);
 			drawHumidityBar(temp);
-		}
-		else{
+		} else {
 			gOffScreen.drawString("NAN", 300, 425);
 		}
 	}
+
 	private void drawHumidityBar(int humidity) {
 		gOffScreen.setColor(Color.blue);
-		gOffScreen.fillRect(310, 350 - humidity*2, 30, humidity*2 + 20);
+		gOffScreen.fillRect(310, 350 - humidity * 2, 30, humidity * 2 + 20);
 	}
+
 	private void drawHygromometerFrame() {
 		gOffScreen.setColor(Color.gray);
 		gOffScreen.drawLine(310, 357, 310, 150);
@@ -160,7 +175,9 @@ public class HygroThermometer extends JApplet implements Runnable {
 		gOffScreen.setColor(Color.blue);
 		gOffScreen.fillOval(300, 350, 50, 50);
 	}
+
 	private void drawHygrometerScale() {
+		gOffScreen.setColor(Color.gray);
 		gOffScreen.setFont(new Font("default", Font.CENTER_BASELINE, 12));
 		gOffScreen.drawString("0", 350, 355);
 		gOffScreen.drawLine(335, 350, 345, 350);
@@ -173,19 +190,22 @@ public class HygroThermometer extends JApplet implements Runnable {
 		gOffScreen.drawString("80", 350, 195);
 		gOffScreen.drawLine(335, 190, 345, 190);
 		gOffScreen.drawString("100", 350, 155);
-	}
-	private void clearScreen() {
-		gOffScreen.clearRect(0, 0, 600, 600);
+		gOffScreen.drawLine(335, 150, 345, 150);
 	}
 
-    // override update()
-    @Override
-    public void update(Graphics g) {
-        paint(g);
-    }
+	private void showTime() {
+		String timestamp = Utils.getDateString(new Date());
+		gOffScreen.setColor(Color.black);
+		gOffScreen.setFont(new Font("default", Font.BOLD, 16));
+		gOffScreen.drawString(timestamp, 170, 500);
+	}
 
-    public void paint(Graphics g) {
-        // 將緩衝區畫面繪到前景
-        g.drawImage(offScreen, 0, 0, this);
-    }
+	@Override
+	public void update(Graphics g) {
+		paint(g);
+	}
+
+	public void paint(Graphics g) {
+		g.drawImage(offScreen, 0, 0, this);
+	}
 }
