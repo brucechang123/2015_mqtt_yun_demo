@@ -63,7 +63,7 @@ public class LineChartDemo extends JApplet implements Runnable {
 			showLineChart();
 			repaint();
 			try {
-				Thread.sleep(500);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -98,17 +98,17 @@ public class LineChartDemo extends JApplet implements Runnable {
 		
 		gOffScreen.setColor(Color.gray);
 		gOffScreen.drawLine(545, 250, 555, 250);
-		gOffScreen.drawString("20", 528, 255);
+		gOffScreen.drawString("25", 528, 255);
 		gOffScreen.drawLine(545, 220, 555, 220);
-		gOffScreen.drawString("22", 528, 225);
+		gOffScreen.drawString("27", 528, 225);
 		gOffScreen.drawLine(545, 190, 555, 190);
-		gOffScreen.drawString("24", 528, 195);
+		gOffScreen.drawString("29", 528, 195);
 		gOffScreen.drawLine(545, 160, 555, 160);
-		gOffScreen.drawString("26", 528, 165);
+		gOffScreen.drawString("31", 528, 165);
 		gOffScreen.drawLine(545, 130, 555, 130);
-		gOffScreen.drawString("28", 528, 135);
+		gOffScreen.drawString("33", 528, 135);
 		gOffScreen.drawLine(545, 100, 555, 100);
-		gOffScreen.drawString("30", 528, 105);
+		gOffScreen.drawString("35", 528, 105);
 	}
 
 	private void drawHygrometerAxes() {
@@ -141,18 +141,18 @@ public class LineChartDemo extends JApplet implements Runnable {
 			//System.out.println(temp);
 			if (lastTemperaturePoint.getX() == -1) {
 				lastTemperaturePoint.setX(570);
-				lastTemperaturePoint.setY(temp * (-1) * 15 + 550);
+				lastTemperaturePoint.setY(temp * (-1) * 15 + 625);
 				gOffScreen.setColor(Color.red);
-				gOffScreen.drawLine(550, temp * (-1) * 15 + 550,
+				gOffScreen.drawLine(550, temp * (-1) * 15 + 625,
 						lastTemperaturePoint.getX(),
 						lastTemperaturePoint.getY());
 			} else {
 				gOffScreen.setColor(Color.red);
 				gOffScreen.drawLine(lastTemperaturePoint.getX(),
 						lastTemperaturePoint.getY(),
-						lastTemperaturePoint.getX() + 20, temp * (-1) * 15 + 550);
+						lastTemperaturePoint.getX() + 20, temp * (-1) * 15 + 625);
 				lastTemperaturePoint.setX(lastTemperaturePoint.getX() + 20);
-				lastTemperaturePoint.setY(temp * (-1) * 15 + 550);
+				lastTemperaturePoint.setY(temp * (-1) * 15 + 625);
 			}
 		}
 	}
